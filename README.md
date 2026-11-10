@@ -6,6 +6,10 @@ A self-contained skill and keybind reference for the Razer Tartarus Pro and a st
 
 Source: [rstolle/tartarus-pro-wow-key-mapper](https://github.com/rstolle/tartarus-pro-wow-key-mapper)
 
+## Visual themes
+
+Use **Choose your world** above the profile toolbar to switch between **WoW Retail** (violet and gold), **WoW Classic** (bronze and parchment), and **WoW Forever** (forest green and gold). The selected appearance persists in this browser and is embedded in **Save HTML** downloads. Themes apply to both device layouts, editors, and dialogs. They change appearance only; the embedded spell library remains the WoW Forever snapshot.
+
 ## Features
 
 - 502 spell entries across nine classes, with embedded icons
