@@ -20,6 +20,10 @@ Profiles, custom skills, and assignments belong to a flavor. Switching flavors r
 
 Catalogs were collected November 10, 2026. Refresh Retail and Classic snapshots manually with `python scripts/update-catalogs.py` (network access required). Deployment and the running app use the embedded data and require no external services. Current progression Classic is identified using [Blizzard's subscription description](https://worldofwarcraft.blizzard.com/en-us/news/24310658/holt-euch-worldofwarcraft-fuer-ein-ganzes-jahr-und-erhaltet-bonusschaetze).
 
+## Spell sorting
+
+Use **Sort by → Name** for A–Z, or **Level** for lowest known learn level first. Level sorting breaks ties by name and places unknown levels and custom skills last. Your choice is saved in browser storage, JSON exports, and portable HTML downloads. Levels come from the source snapshots and can vary by specialization, talent choices, and rank. Forever levels are matched by exact class and spell name; unmatched entries remain unknown.
+
 ## Features
 
 - Separate Retail, progression Classic, and Forever spell catalogs, with embedded icons

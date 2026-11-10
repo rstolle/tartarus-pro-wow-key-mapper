@@ -59,6 +59,12 @@ def catalog(task):
             'name': name, 'class': cls, 'school': 'Ability / talent',
             'icon': '/wowhead/' + info['icon'] + '.jpg', 'flavor': flavor,
             'sourceId': row['id']})
+        level = row.get('level')
+        if isinstance(level, int) and level > 0:
+            previous = found[name].get('level')
+            found[name]['level'] = min(previous, level) if previous else level
+        else:
+            found[name].setdefault('level', None)
     if len(found) < 10:
         raise ValueError(f'Suspiciously small catalog: {flavor} {cls}')
     if not patch:
@@ -72,6 +78,29 @@ def main():
     data = json.loads(match[2])
     data['spells'] = [dict(spell, flavor='forever') for spell in data['spells']
                       if spell.get('flavor', 'forever') == 'forever']
+    # Match Forever levels by class and exact name, preserving legacy spell IDs.
+    def forever_levels(cls):
+        slug = cls.lower().replace(' ', '-')
+        source = json.loads(fetch(f'https://wowforever.wclbox.com/shuju/en/spellbook/{slug}.json'))
+        levels = {}
+        for tab in source['tabs']:
+            for spell in tab['spells']:
+                # Talent spell records can report level 1 as an engine default;
+                # that is not a sourced talent unlock level.
+                if spell.get('status') == 'talent':
+                    continue
+                values = [rank.get('forever', {}).get('level')
+                          for rank in spell.get('ranks', []) if rank.get('forever')]
+                values = [level for level in values if isinstance(level, int) and level > 0]
+                level = min(values) if values else spell.get('level')
+                if isinstance(level, int) and level > 0:
+                    levels[spell['name']] = level
+        return cls, levels
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        levels = dict(pool.map(forever_levels, sorted({s['class'] for s in data['spells']})))
+    for spell in data['spells']:
+        spell['level'] = levels[spell['class']].get(spell['name'])
     tasks = [(flavor, prefix, cls, cid)
              for flavor, prefix in [('retail', ''), ('classic', 'mop-classic/')]
              for cls, cid in CLASSES.items() if flavor == 'retail' or cid <= 11]

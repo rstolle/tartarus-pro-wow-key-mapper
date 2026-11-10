@@ -14,6 +14,7 @@ assert.equal(new Set(library.spells.map(s => s.id)).size, library.spells.length)
 for (const spell of library.spells) {
   assert.ok(Object.hasOwn(library.catalogs, spell.flavor));
   assert.ok(Object.hasOwn(library.icons, spell.icon));
+  assert.ok(spell.level === null || (Number.isInteger(spell.level) && spell.level > 0));
 }
 const root = {dataset: {}, querySelector: () => ({textContent: ''}), querySelectorAll: () => []};
 const context = {
@@ -31,6 +32,8 @@ const legacy=initialState();delete legacy.profiles[0].flavor;delete legacy.flavo
 legacy.profiles[0].layers.base['01']={spellId:LIBRARY.spells.find(s=>s.flavor==='forever').id,note:'Old save'};
 legacy.customSkills.push({id:'legacy-custom',name:'Legacy macro',class:'Mage',icon:''});
 let migrated=validateState(legacy);
+assert.equal(migrated.librarySort,'name');
+migrated.librarySort='level';
 assert.equal(migrated.profiles[0].flavor,'forever');
 assert.equal(migrated.customSkills[0].flavor,'forever');
 assert.equal(migrated.profiles[0].layers.base['01'].note,'Old save');
@@ -52,5 +55,16 @@ assert.equal(flavorClasses('classic').length,12);
 assert.equal(flavorClasses('forever').length,10);
 assert.ok(!flavorClasses('classic').includes('Evoker'));
 assert.ok(!flavorClasses('forever').includes('Monk'));
+const sample=[
+  {id:'1',class:'Mage',name:'Alpha',level:10},
+  {id:'2',class:'Mage',name:'Zulu',level:2},
+  {id:'3',class:'Mage',name:'Beta',level:2},
+  {id:'4',class:'Mage',name:'Unknown',level:null},
+  {id:'5',class:'Mage',name:'Custom',custom:true}
+];
+assert.equal([...sample].sort((a,b)=>compareSpells(a,b,'level')).map(s=>s.id).join(','),'3,2,1,5,4');
+assert.equal([...sample].sort((a,b)=>compareSpells(a,b,'name')).map(s=>s.id).join(','),'1,3,5,4,2');
+assert.equal(spellLevel({level:0}),null);
+assert.equal(spellLevel({level:'10'}),null);
 `, context);
-console.log('PASS: catalog integrity, legacy migration, flavor isolation, supported classes, and backup roundtrip.');
+console.log('PASS: catalog integrity, save migration, flavor isolation, numeric/name sorting, unknown levels, and backup roundtrip.');
