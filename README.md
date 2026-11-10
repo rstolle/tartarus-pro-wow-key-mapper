@@ -2,6 +2,10 @@
 
 A self-contained skill and keybind reference for the Razer Tartarus Pro and a standard US ANSI 104-key keyboard. Drag spell icons onto controls and keep separate layouts for each character and modifier layer.
 
+**[Open the live app](https://rstolle.github.io/tartarus-pro-wow-key-mapper/)**
+
+Source: [rstolle/tartarus-pro-wow-key-mapper](https://github.com/rstolle/tartarus-pro-wow-key-mapper)
+
 ## Features
 
 - 502 spell entries across nine classes, with embedded icons
@@ -21,7 +25,9 @@ Assignments are a visual reference. Configure the actual device and in-game keyb
 
 ## Deploy to GitHub Pages
 
-The included workflow publishes the app whenever you push to `main`. It uploads only the app's static files and serves the complete app at the site's root URL.
+This repository uses **Settings → Pages → Source: GitHub Actions**, following the same deployment pattern as [Ironhorse Taekwondo Flashcards](https://github.com/rstolle/ironhorse-taekwondo-flashcards). The workflow in `.github/workflows/pages.yml` publishes the app whenever you push to `main`. It uploads only the app's static files and serves the complete app at the site's root URL.
+
+Pages is already configured for this repository. The steps below apply if you deploy a separate copy:
 
 1. Push this project to a GitHub repository with a `main` branch.
 2. In the repository, open **Settings → Pages**.
