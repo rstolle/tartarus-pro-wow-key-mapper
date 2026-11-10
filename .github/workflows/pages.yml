@@ -24,6 +24,9 @@ jobs:
       - name: Check out source
         uses: actions/checkout@v6
 
+      - name: Validate catalogs and save migration
+        run: node tests/validate.cjs
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 

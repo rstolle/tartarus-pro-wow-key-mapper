@@ -6,13 +6,23 @@ A self-contained skill and keybind reference for the Razer Tartarus Pro and a st
 
 Source: [rstolle/tartarus-pro-wow-key-mapper](https://github.com/rstolle/tartarus-pro-wow-key-mapper)
 
-## Visual themes
+## WoW flavors
 
-Use **Choose your world** above the profile toolbar to switch between **WoW Retail** (violet and gold), **WoW Classic** (bronze and parchment), and **WoW Forever** (forest green and gold). The selected appearance persists in this browser and is embedded in **Save HTML** downloads. Themes apply to both device layouts, editors, and dialogs. They change appearance only; the embedded spell library remains the WoW Forever snapshot.
+**Choose your WoW flavor** selects both the visual style and the embedded spell catalog:
+
+- **Retail**: Midnight 12.1.5, all 13 classes
+- **Classic**: progression Classic, Mists of Pandaria 5.5.4, all 11 classes
+- **Forever**: the existing nine-class WCLBox snapshot
+
+Retail and progression Classic snapshots include class abilities, active talents, and Classic specialization abilities from Wowhead. Passive entries and duplicate spell names are omitted. These are dated catalog snapshots, not a live in-game spellbook or an exhaustive list of every racial, pet command, item, or temporary ability.
+
+Profiles, custom skills, and assignments belong to a flavor. Switching flavors restores that flavor's profile or creates an empty one. Older backups and layouts are migrated to Forever. Custom skills are user-defined entries scoped to the selected flavor; they are not verified by the source catalogs. JSON exports and **Save HTML** keep all flavors together.
+
+Catalogs were collected November 10, 2026. Refresh Retail and Classic snapshots manually with `python scripts/update-catalogs.py` (network access required). Deployment and the running app use the embedded data and require no external services. Current progression Classic is identified using [Blizzard's subscription description](https://worldofwarcraft.blizzard.com/en-us/news/24310658/holt-euch-worldofwarcraft-fuer-ein-ganzes-jahr-und-erhaltet-bonusschaetze).
 
 ## Features
 
-- 502 spell entries across nine classes, with embedded icons
+- Separate Retail, progression Classic, and Forever spell catalogs, with embedded icons
 - Tartarus Pro and full keyboard layouts
 - Base, Shift, Ctrl, and Alt layers
 - Editable keybind labels, shortcut recording, and notes
@@ -64,6 +74,10 @@ python -m http.server 8080 --bind 127.0.0.1
 ```
 
 Then open `http://127.0.0.1:8080/`.
+
+## Validation
+
+Run `node tests/validate.cjs` to check catalog integrity, supported classes, old-save migration, flavor isolation, and backup roundtrips. The GitHub Pages workflow runs this check before deploying.
 
 ## Editing
 
