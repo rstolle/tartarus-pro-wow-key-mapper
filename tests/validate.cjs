@@ -28,13 +28,14 @@ const context = {
 vm.runInNewContext(code.slice(code.indexOf('const CLASSES'), code.indexOf("let loadMessage='';")) +
   code.slice(code.indexOf('const profile ='), code.indexOf('const spellById')) +
   code.match(/function spellAvailable\(spell\)\{[^\n]+\}/)[0] + `
-const legacy=initialState();delete legacy.profiles[0].flavor;delete legacy.flavorProfiles;
+const legacy=initialState();delete legacy.profiles[0].flavor;delete legacy.profiles[0].thumbpadMode;delete legacy.flavorProfiles;
 legacy.profiles[0].layers.base['01']={spellId:LIBRARY.spells.find(s=>s.flavor==='forever').id,note:'Old save'};
 legacy.customSkills.push({id:'legacy-custom',name:'Legacy macro',class:'Mage',icon:''});
 let migrated=validateState(legacy);
 assert.equal(migrated.librarySort,'name');
 migrated.librarySort='level';
 assert.equal(migrated.profiles[0].flavor,'forever');
+assert.equal(migrated.profiles[0].thumbpadMode,8);
 assert.equal(migrated.customSkills[0].flavor,'forever');
 assert.equal(migrated.profiles[0].layers.base['01'].note,'Old save');
 for(const f of ['retail','classic','forever']){
@@ -46,6 +47,24 @@ migrated.activeProfile=migrated.flavorProfiles.retail;
 migrated=validateState(migrated);
 assert.deepEqual(validateState(JSON.parse(JSON.stringify(migrated))),migrated);
 state=migrated;
+state.activeDevice='tartarus';
+assert.equal(activeSlots().length,32);
+const padProfile=profile();
+padProfile.layers.base['dpad-ne']={spellId:LIBRARY.spells.find(s=>s.flavor==='retail').id,note:'Keep diagonal'};
+padProfile.keybinds.base['dpad-ne']='Ctrl+Q';
+padProfile.thumbpadMode=4;
+assert.equal(activeSlots().length,28);
+assert.equal(activeSlots().filter(s=>s.kind==='dpad').length,4);
+assert.ok(!activeSlots().some(s=>DIAGONAL_SLOTS.has(s.id)));
+const restored=validateState(JSON.parse(JSON.stringify(state)));
+assert.equal(restored.profiles.find(p=>p.id===padProfile.id).thumbpadMode,4);
+assert.equal(restored.profiles.find(p=>p.id===padProfile.id).layers.base['dpad-ne'].note,'Keep diagonal');
+assert.equal(restored.profiles.find(p=>p.id===padProfile.id).keybinds.base['dpad-ne'],'Ctrl+Q');
+state.activeDevice='keyboard';assert.equal(activeSlots().length,104);
+state.activeDevice='tartarus';padProfile.thumbpadMode=8;
+assert.ok(activeSlots().some(s=>s.id==='dpad-ne'));
+const invalidPad=copy(state);invalidPad.profiles[0].thumbpadMode=6;
+assert.throws(()=>validateState(invalidPad));
 assert.ok(spellAvailable(LIBRARY.spells.find(s=>s.flavor==='retail')));
 assert.ok(!spellAvailable(LIBRARY.spells.find(s=>s.flavor==='forever')));
 migrated.profiles[0].layers.base['01'].spellId=LIBRARY.spells.find(s=>s.flavor==='retail').id;
@@ -67,4 +86,4 @@ assert.equal([...sample].sort((a,b)=>compareSpells(a,b,'name')).map(s=>s.id).joi
 assert.equal(spellLevel({level:0}),null);
 assert.equal(spellLevel({level:'10'}),null);
 `, context);
-console.log('PASS: catalog integrity, save migration, flavor isolation, numeric/name sorting, unknown levels, and backup roundtrip.');
+console.log('PASS: catalog integrity, save migration, flavor isolation, numeric/name sorting, thumbpad modes, and backup roundtrip.');

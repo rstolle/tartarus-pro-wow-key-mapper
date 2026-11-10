@@ -24,6 +24,10 @@ Catalogs were collected November 10, 2026. Refresh Retail and Classic snapshots 
 
 Use **Sort by → Name** for A–Z, or **Level** for lowest known learn level first. Level sorting breaks ties by name and places unknown levels and custom skills last. Your choice is saved in browser storage, JSON exports, and portable HTML downloads. Levels come from the source snapshots and can vary by specialization, talent choices, and rank. Forever levels are matched by exact class and spell name; unmatched entries remain unknown.
 
+## Thumbpad directions
+
+Use **Thumbpad → 4-way / 8-way** in the Tartarus toolbar to match your Synapse configuration. The mode is saved per profile and included in JSON and portable HTML backups. In 4-way mode, diagonals are hidden from the keypad, assignment list, and counts; their spells, notes, and keybinds are preserved for 8-way mode. Clearing the visible layer in 4-way mode also preserves those hidden diagonals. The keyboard layout is unaffected. Configure the actual hardware mode in Synapse.
+
 ## Features
 
 - Separate Retail, progression Classic, and Forever spell catalogs, with embedded icons
